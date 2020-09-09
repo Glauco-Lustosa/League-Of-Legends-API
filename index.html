@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="mainApp">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/style.css">
+    <script src="https://kit.fontawesome.com/c2ea2e0f41.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="icon" href="img/logo.png">
+    </link>
+    <title>League Of Legends</title>
+</head>
+
+<body ng-controller="angularController">
+    <div class="pt-5" style="display: flex; justify-content: center; align-items: center;">
+        <div class="text-center"><img class="logo" src="img/logocerta.png"></div>
+    </div>
+
+    <div class="searchbarContainer">
+        <div class="search-box">
+            <input id="search" type="search" ng-model="champion" placeholder="Search your champion here..." />
+            <button type="submit" class="search-btn" ng-click="search(champion)"><i class="fa fa-search"></i></button>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-center" style="display: inline-flex; flex-wrap: wrap; gap: 10px;" ng-hide="switch">
+        <span><img class="iconFlag" src="img/brasil.png"></span>
+        <label class="switch">
+            <input type="checkbox" id="Checkbox" ng-click="search(champion)">
+            <span class="slider round"></span>
+        </label>
+        <span><img class="iconFlag" src="img/estados-unidos-da-america.png"></span>
+    </div>
+
+    <div>
+        <audio ng-src="{{audioPath}}" id="audioCampeao"></audio>
+    </div>
+
+    <!-- <div class="container mt-4">
+        <div class="row justify-content-center">
+            <button type="button" class="btn" id="btn-circle">
+                <i class="fa fa-question" style="color: #dcbf59;"></i>
+            </button>
+        </div>
+    </div> -->
+
+    <div class="container" id="CardGlobal" style="color: white;">
+        <div class="row justify-content-center">
+            <!-- Card 1 -->
+            <div class="col-md-12 card-container justify-content-center">
+                <div class="card-flip" id="rotate">
+                    <!-- Card 1 Front -->
+                    <div class="card front block shadow" style="border-color: #dcbf59;">
+                        <div class="cover remove"></div>
+                        <div id="blackScrenn" ng-hide="loadingSpinner"></div>
+                        <div class="loader" ng-hide="loadingSpinner"></div>
+                        <img class="card-img-top" ng-src={{splash||'img/splashArt-PlaceHolder.png'}} id="placeHolderImg" ng-hide="splashHide">
+                        <div class="card-block card-img-overlay">
+                            <div class="card-header">
+                                <div class="d-flex viewBtn pr-5">
+                                    <button type="button" class="btn" id="btn-circle" ng-click="viewOn()"
+                                        ng-hide="displayOn">
+                                        <i class="fa fa-eye" style="color: #dcbf59;"></i>
+                                    </button>
+                                    <button type="button" class="btn" id="btn-circle" ng-click="viewOff()"
+                                        ng-hide="displayOff">
+                                        <i class="fa fa-eye-slash" style="color: #dcbf59;"></i>
+                                    </button>
+                                </div>
+                                <div class="championName remove" id="championName">
+                                    {{id}}
+                                </div>
+                            </div>
+                            <div class="card-text remove" id="lore">
+                                {{lore}}
+                            </div>
+                            <div class="card-footer d-flex justify-content-between">
+                                <button type="button" class="btn" id="btn-rectangle" ng-click="skinPrev()">
+                                    <i class="fa fa-angle-left" style="color: #dcbf59;"></i>
+                                </button>
+                                <button type="button" class="btn" id="btn-circle" ng-click="flipForBack()">
+                                    <i class="fa fa-refresh" style="color: #dcbf59;"></i>
+                                </button>
+                                <button type="button" class="btn" id="btn-rectangle" ng-click="skinNext()">
+                                    <i class="fa fa-angle-right" style="color: #dcbf59;"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Card 1 Front -->
+
+                    <!-- Card 1 Back -->
+                    <div class="card back block shadow" style="border-color: #dcbf59;">
+                        <!-- <div class="back-Background"></div> -->
+                        <img class="card-img-top1" ng-src="{{splash||'img/splashArt-PlaceHolder.png'}}" alt="Card image">
+                        <div class="card-block card-img-overlay text-center">
+                            <!-- <div class="card-header">{{name}}</div> -->
+                            <div class="card-text2 m-0">
+                                <div class="container p-0">
+                                    <div class="row mt-2" style="display: flex; justify-content: space-between;">
+                                        <div class="mt-2 ml-2">
+                                            <button type="button" class="btn justify-content-start" id="btn-mute" ng-click="audioVolume()">
+                                                <i class="fa fa-volume-up" style="color: #dcbf59;" id="btn-mute-icon"></i>
+                                            </button>
+                                        </div>
+                                        <div class="" id="iconBorder">
+                                            <img id="championIcon" ng-src={{icon||'img/icon-placeHolder.png'}} style="margin-top: 40px !important; margin-bottom: 20px !important; display: flex;">
+                                        </div>
+                                        <div class="mt-2 mr-2">
+                                            <button type="button" class="btn justify-content-start" id="btn-circle" ng-click="audioPlay()">
+                                                <i class="fa fa-play" style="color: #dcbf59;"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row back-item containerIcon" style="background-color: pink;">
+                                    <table class="table table-sm table-borderless" style="color: white;">
+                                        <tbody>
+                                            <tr>
+                                                <th scope="row">
+                                                    <img class="iconStats" src="img/icons/Attack_damage_icon.png">
+                                                </th>
+                                                <td>{{attackDamage||'???'}}</td>
+                                                <th><img class="iconStats" src="img/icons/Range_icon.png"></th>
+                                                <td>{{range||'???'}}</td>
+                                                <th><img class="iconStats" src="img/icons/Movement_speed_icon.png"></th>
+                                                <td>{{moveS||'???'}}</td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row" style="border: none;">
+                                                    <img class="iconStats" src="img/icons/Health_icon.png">
+                                                </th>
+                                                <td>{{life||'???'}}</td>
+                                                <th><img class="iconStats" src="img/icons/Mana_icon.png">
+                                                </th>
+                                                <td>{{mana||'???'}}</td>
+                                                <th><img class="iconStats" src="img/icons/Armor_icon.png"></th>
+                                                <td>{{armor||'???'}}</td>
+                                            </tr>
+                                            <tr>
+                                                <th scope="row"><img class="iconStats"
+                                                        src="img/icons/Health_regeneration_icon.png"></th>
+                                                <td>{{lifeRegen||'???'}}</td>
+                                                <th><img class="iconStats" src="img/icons/Mana_regeneration_icon.png">
+                                                </th>
+                                                <td>{{manaRegen||'???'}}</td>
+                                                <th><img class="iconStats" src="img/icons/Magic_resistance_icon.png">
+                                                </th>
+                                                <td>{{magicResistence||'???'}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="row back-item">
+                                    <div class="container text-center">
+                                        <div class="row justify-content-center mb-1">
+                                            <button class="skillButton" data-toggle="modal" data-target="#exampleModal" ng-click="video('P')">
+                                                <img class="skillImg" ng-src="{{skillP||'img/skill-placeHolder.png'}}">
+                                            </button>
+                                        </div>
+                                        <div class="row flex-gap" style="display: flex; justify-content: space-between;">
+                                            <div>
+                                                <button class="skillButton" data-toggle="modal" data-target="#exampleModal" ng-click="video('Q')">
+                                                    <img class="skillImg" ng-src="{{skillQ||'img/skill-placeHolder.png'}}">
+                                                </button>
+                                            </div>
+                                            <div class="pl-1 pr-1">
+                                                <button class="skillButton" data-toggle="modal" data-target="#exampleModal" ng-click="video('W')">
+                                                    <img class="skillImg" ng-src="{{skillW||'img/skill-placeHolder.png'}}">
+                                                </button>
+                                            </div>
+                                            <div>
+                                                <button class="skillButton" data-toggle="modal" data-target="#exampleModal" ng-click="video('E')">
+                                                    <img class="skillImg" ng-src="{{skillE||'img/skill-placeHolder.png'}}">
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="row justify-content-center mt-1">
+                                            <button class="skillButton" data-toggle="modal" data-target="#exampleModal" ng-click="video('R')">
+                                                <img class="skillImg" ng-src="{{skillR||'img/skill-placeHolder.png'}}">
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <button type="button" class="btn" id="btn-circle" ng-click="flipForFront()">
+                                    <i class="fa fa-refresh" style="color: #dcbf59;"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Card 1 Back -->
+                </div>
+            </div>
+            <!-- End Card 1 -->
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="skillTitle"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document" id="modalFull">
+            <div class="modal-content">
+                <div class="modal-header" style="display: flex; flex-direction: row-reverse;  border: none;">
+                    <h5 class="modal-title" id="skillTitle" style="margin: 0 auto;">NOME DA SKILL</h5>
+                    <button type="button" class="btn m-0 p-0" data-dismiss="modal" aria-label="Close" id="btn-circle" style="position: absolute;">
+                        <i class="fa fa-times" aria-hidden="true" style="color: #dcbf59;"></i>
+                    </button>
+                </div>
+                <div class="modal-body pt-3">
+                    <iframe width="100%" height="315" id="skillVideoContainer" ng-src="{{trustSrc(preview)||'img/no-ability-background.png'}}" frameborder="0"
+                    allow="encrypted-media" ng-hide="videoHide" allowfullscreen></iframe>
+                    <img class="noPassiva" src="img/no-ability-background.png" ng-hide="noSkill">
+                </div>
+                <div class="modal-footer text-center" style="border: none; display: flex; flex-direction: column;">
+                    <div class="skillInfo" style="margin: 0 auto;">
+                        <img class="skillImgModal" id="skillImage" ng-src="{{link||'img/skill-placeHolder.png'}}">
+                    </div>
+                    <div id="skillContent">
+                        
+                    </div>
+                    <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button> -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-6" id="footerBox">
+                    <div class="row">
+                        <div class="col-md-6 p-0">
+                            <img class="profilePicture" src="img/glauco-icon.png">
+                        </div>
+                        <div class="col-md-6 footerText">
+                            Olá, meu nome é Glauco Lustosa e sou Desenvolvedor Full-Stack. Esse site foi construido com intuito de estudo com meu aluno, fiz parte do Design do site e Back-end nele contido. Sou amante da área de TI e relacionados e atualmente eu trabalho como Consultor de TI e procuro me expandir na área de Full-Stack Developer.                        </div>
+                        <div style="width: 100%;">
+                            <div class="footerSocialIcons pt-4" id="galucoMobile">
+                                <a href="https://api.whatsapp.com/send?phone=5511945311198&text=Oi%2C%20te%20contatei%20pelo%20seu%20site!!!" target="_blank"><img class="iconsFooter" src="img/iconsFooter/iconfinder_whatsapp_764566.png" alt=""></a>
+                                <a href="https://www.instagram.com/glauco.lustosa/" target="_blank"><img class="iconsFooter" src="img/iconsFooter/iconfinder_instagram_six_black_107100.png" alt=""></a>
+                                <a href="https://www.facebook.com/glauco.lustosa" target="_blank"><img class="iconsFooter" src="img/iconsFooter/iconfinder_facebook_six_black_107121.png" alt=""></a>
+                                <a href="https://www.linkedin.com/in/glauco-lustosa/" target="_blank"><img class="iconsFooter" src="img/iconsFooter/iconfinder_linkedin_six_black_107094.png" alt=""></a>
+                                <a href="https://github.com/McLovim" target="_blank"><img class="iconsFooter" src="img/iconsFooter/iconfinder_github_six_black_107112.png" alt=""></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-6 footerText" id="upperText">
+                                            Muito prazer, meu nome é João Gabriel e sou aprendiz na area de Web-Development. Esse site foi construido para representar meu progresso nesses ultimos meses, fiz tudo com auxilio do meu mentor. Sempre fui atraido pela da área de TI e relacionados, e esse foi o primeiro passo de muitos nessa carreira.
+                        </div>
+                        <div class="col-md-6 p-0">
+                            <img class="profilePicture" src="img/batata_gordo.png">
+                        </div>
+                        <div class="col-md-6 footerText" id="downText">
+                                            Muito prazer, meu nome é João Gabriel e sou aprendiz na area de Web-Development. Esse site foi construido para representar meu progresso nesses ultimos meses, fiz tudo com auxilio do meu mentor. Sempre fui atraido pela da área de TI e relacionados, e esse foi o primeiro passo de muitos nessa carreira.
+                        </div>
+                    </div>   
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6" id="footerBox">
+                    <div class="footerSocialIcons pt-4" id="glaucoNormal">
+                        <a href="https://api.whatsapp.com/send?phone=5511945311198&text=Oi%2C%20te%20contatei%20pelo%20seu%20site!!!" target="_blank"><img class="iconsFooter" src="img/iconsFooter/iconfinder_whatsapp_764566.png" alt=""></a>
+                        <a href="https://www.instagram.com/glauco.lustosa/" target="_blank"><img class="iconsFooter" src="img/iconsFooter/iconfinder_instagram_six_black_107100.png" alt=""></a>
+                        <a href="https://www.facebook.com/glauco.lustosa" target="_blank"><img class="iconsFooter" src="img/iconsFooter/iconfinder_facebook_six_black_107121.png" alt=""></a>
+                        <a href="https://www.linkedin.com/in/glauco-lustosa/" target="_blank"><img class="iconsFooter" src="img/iconsFooter/iconfinder_linkedin_six_black_107094.png" alt=""></a>
+                        <a href="https://github.com/McLovim" target="_blank"><img class="iconsFooter" src="img/iconsFooter/iconfinder_github_six_black_107112.png" alt=""></a>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="footerSocialIcons pt-4" id="batataNormal">
+                        <a href="https://api.whatsapp.com/send?phone=5511951169301&text=Oi%2C%20te%20contatei%20pelo%20seu%20site!!!" target="_blank"><img class="iconsFooter" src="img/iconsFooter/iconfinder_whatsapp_764566.png" alt=""></a>
+                        <a href="https://www.instagram.com/batatagordo/" target="_blank"><img class="iconsFooter" src="img/iconsFooter/iconfinder_instagram_six_black_107100.png" alt=""></a>
+                        <a href="https://www.instagram.com/batatagordo/" target="_blank"><img class="iconsFooter" src="img/iconsFooter/iconfinder_facebook_six_black_107121.png" alt=""></a>
+                        <a href="" target="_blank"><img class="iconsFooter" src="img/iconsFooter/iconfinder_linkedin_six_black_107094.png" alt=""></a>
+                        <a href="https://github.com/dragondojo2" target="_blank"><img class="iconsFooter" src="img/iconsFooter/iconfinder_github_six_black_107112.png" alt=""></a>
+                    </div>
+                    <div class="footerSocialIcons" id="batataMobile">
+                        <a href="https://api.whatsapp.com/send?phone=5511951169301&text=Oi%2C%20te%20contatei%20pelo%20seu%20site!!!" target="_blank"><img class="iconsFooter" src="img/iconsFooter/iconfinder_whatsapp_764566.png" alt=""></a>
+                        <a href="https://www.instagram.com/batatagordo/" target="_blank"><img class="iconsFooter" src="img/iconsFooter/iconfinder_instagram_six_black_107100.png" alt=""></a>
+                        <a href="https://www.instagram.com/batatagordo/" target="_blank"><img class="iconsFooter" src="img/iconsFooter/iconfinder_facebook_six_black_107121.png" alt=""></a>
+                        <a href="" target="_blank"><img class="iconsFooter" src="img/iconsFooter/iconfinder_linkedin_six_black_107094.png" alt=""></a>
+                        <a href="https://github.com/dragondojo2" target="_blank"><img class="iconsFooter" src="img/iconsFooter/iconfinder_github_six_black_107112.png" alt=""></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container pt-3 mb-3">
+            <div class="row">
+                <div style="margin: 0 auto;">
+                    © 2020 Glauco Lustosa & Joao Gabriel
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row footerSocialIcons pb-3">
+                    <img class="iconsFooter" src="img/iconsFooter/html-logo.png">
+                    <img class="iconsFooter" src="img/iconsFooter/sass-logo.png">
+                    <img class="iconsFooter" src="img/iconsFooter/js-logo.png">
+                    <img class="iconsFooter" src="img/iconsFooter/bootstrap-logo.png">
+                    <img class="iconsFooter" src="img/iconsFooter/api-logo.png">
+                    <img class="iconsFooter" src="img/iconsFooter/angularJS-logo.png">
+            </div>
+        </div>
+    </footer>
+</body>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+<script type="text/javascript" src="angular-1.8.0/angular.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js"
+    integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+    integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+    crossorigin="anonymous"></script>
+<script type="text/javascript" src="script.js"></script>
+
+</html>
